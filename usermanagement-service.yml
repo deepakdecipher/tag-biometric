@@ -2,6 +2,8 @@ server:
   port: ${PORT}
 
 spring:
+  config:
+    import: optional:file:.env
   datasource:
     hikari:
       connection-timeout: 20000

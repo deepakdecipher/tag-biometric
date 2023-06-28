@@ -8,6 +8,9 @@ spring:
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 2
+    url: ${DATABASE_URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}  
   jpa:
     hibernate:
       ddl-auto: none

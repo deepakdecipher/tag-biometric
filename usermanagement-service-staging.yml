@@ -1,5 +1,5 @@
 server:
-  port: ${safsd}
+  port: 9648
 
 spring:
   datasource:

@@ -1,0 +1,163 @@
+server:
+  port: 9001
+spring:
+  cloud:
+    gateway:
+      default-filter:
+        - TokenRelay
+      routes:
+        - id: program-service
+          uri: lb://program-service
+          predicates:
+            - Path=/programs/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: programCircuitBreaker
+                fallbackUri: forward:/fallback/programFallback
+        - id: client-service
+          uri: lb://client-service
+          predicates:
+            - Path=/clients/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: clientCircuitBreaker
+                fallbackUri: forward:/fallback/clientFallback
+        - id: profile-service
+          uri: lb://profile-service
+          predicates:
+            - Path=/profiles/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: profileCircuitBreaker
+                fallbackUri: forward:/fallback/profileFallback
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/cards/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: accountCircuitBreaker
+                fallbackUri: forward:/fallback/accountFallback
+        - id: status-service
+          uri: lb://status-service
+          predicates:
+            - Path=/card-status/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: statusCircuitBreaker
+                fallbackUri: forward:/fallback/statusFallback
+        - id: processor-service
+          uri: lb://processor-service
+          predicates:
+            - Path=/processors/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: processorCircuitBreaker
+                fallbackUri: forward:/fallback/processorFallback
+        - id: usermanagement-service
+          uri: lb://usermanagement-service
+          predicates:
+            - Path=/usermanagement/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: userManagementCircuitBreaker
+                fallbackUri: forward:/fallback/userManagementFallback
+        - id: marqeta-service
+          uri: lb://marqeta-service
+          predicates:
+            - Path=/mqa/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: marqetaCircuitBreaker
+                fallbackUri: forward:/fallback/marqetaFallback
+        - id: webhook-service
+          uri: lb://webhook-service
+          predicates:
+            - Path=/webhook/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - name: CircuitBreaker
+              args:
+                name: webhookCircuitBreaker
+                fallbackUri: forward:/fallback/webhookFallback
+        - id: jit-service
+          uri: lb://jit-service
+          predicates:
+            - Path=/jit/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: jitCircuitBreaker
+                fallbackUri: forward:/fallback/jitFallback
+        - id: three-ds-service
+          uri: lb://three-ds-service
+          predicates:
+            - Path=/three-ds/**
+          filters:
+            - TagBiometricGatewayFilter
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: threeDsCircuitBreaker
+                fallbackUri: forward:/fallback/threeDsFallback
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: http://localhost:8080/realms/tag-biometric/protocol/openid-connect/token
+            issuer-uri: http://localhost:8080/realms/tag-biometric
+            jwk-set-uri: http://localhost:8080/realms/tag-biometric/protocol/openid-connect/certs
+            user-info-authentication-method: header
+            admin-cli: admin-cli
+            auth-server-url: http://localhost:8080/
+            realm: tag-biometric
+            clientSecret: wLzrxTT1bzG6305dmihj6wTnUApuCxH5
+            webhook-url: /webhook/mqa
+            jit-funding-url: /jit/mqa/gateway/mqa
+            three-ds-url: /three-ds/challenge-result
+            authentication-response-url: /three-ds/authentication-result
+            authorization: Authorization
+        registration:
+          tag-pay-gateway-client:
+            provider: keycloak
+            client-id: gateway-service
+            client-secret: wLzrxTT1bzG6305dmihj6wTnUApuCxH5
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8080/login/oauth2/code/keycloak"
+
+encryption:
+  value: false
+  key: Thisisatestkeyfortesting

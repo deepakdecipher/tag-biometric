@@ -8,9 +8,6 @@ spring:
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 2
-    url: jdbc:postgresql://localhost:5432/tagbiometric
-    username: tagdev
-    password: tagdev
   jpa:
     hibernate:
       ddl-auto: none

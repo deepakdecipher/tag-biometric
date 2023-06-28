@@ -1,0 +1,54 @@
+server:
+  port: 9647
+
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 2
+    url: jdbc:postgresql://localhost:5432/tagbiometric
+    username: tagdev
+    password: tagdev
+  jpa:
+    hibernate:
+      ddl-auto: none
+      show-sql: false
+  redis:
+    host: localhost
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      cache-null-values: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak-tag-pay-qa.devtomaster.com/realms/tag-biometric
+  liquibase:
+    change-log: classpath:db/changelog/liquibase-changelog.yml
+
+keycloak:
+  realm: tag-biometric
+  auth-server-url: https://keycloak-tag-pay-qa.devtomaster.com/
+  ssl-required: none
+  resource: gateway-service
+  credentials:
+    secret: zftds7be3JLWbaAYLissdSX5h7kvGBdg
+  use-resource-role-mappings: false
+  bearer-only: true
+  public-client: true
+keycloak-details:
+  user: admin
+  pass: password
+  client-id: admin-cli
+  realm-master: master
+
+include:
+  in:
+    token:
+      scope: true
+
+cipher:
+  secret-key: ${SECRET_KEY:this_is_the_secret_key}
+  salt-key: ${SALT_KEY:this!is!the!salt!key}

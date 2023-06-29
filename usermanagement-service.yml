@@ -2,8 +2,6 @@ server:
   port: 8708
 
 spring:
-  config:
-    import: docker-compose.yml
   datasource:
     hikari:
       connection-timeout: 20000
